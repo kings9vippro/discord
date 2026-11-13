@@ -1,0 +1,1 @@
+{"name":"phan-anh-khoi-discord-web","version":"1.0.0","private":true,"scripts":{"start":"node discord_web.js"},"engines":{"node":">=20"}}
