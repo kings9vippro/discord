@@ -1,17 +1,45 @@
-# Discord web
+# Discord Workspace — Phan Anh Khôi
 
-Web quản trị Discord, giao diện trắng đen, tác giả giao diện Phan Anh Khôi.
+Web quản trị Discord với giao diện trắng đen, chọn nhiều kênh và theo dõi tác vụ độc lập theo từng ứng dụng. Phát triển và vận hành: Phan Anh Khôi.
 
-## Cấu hình
+## Thay đổi phiên bản 2
 
-Node.js 20+. Mật khẩu mạnh đã được tạo ngẫu nhiên; repo chỉ chứa mã xác minh scrypt, không chứa mật khẩu gốc. Chủ sở hữu nhận mật khẩu riêng sau khi cập nhật. Token Discord được nhập trong trang web sau khi đăng nhập, chỉ giữ trong bộ nhớ tiến trình; không đưa token lên GitHub. Discord có thể hạn chế tự động hóa tài khoản người dùng; mã không đảm bảo hoạt động nếu API từ chối.
+- Quản lý nhiều ứng dụng Discord qua biến môi trường, hiển thị tên tài khoản, username và ID thật lấy từ API.
+- Chọn nhiều kênh của máy chủ đã cấu hình; tối đa 25 kênh trong một tác vụ thông báo.
+- Bỏ trường **số lượt gửi** và **độ trễ** ở giao diện. Một tác vụ gửi một bản nháp đến mỗi kênh đã chọn; nội dung dài chia phần theo giới hạn Discord.
+- Thẻ Tác vụ có lọc theo tài khoản, tổng số tác vụ, số tin đã gửi, lỗi và nút **Dừng tác vụ**.
+- Tác vụ của các ứng dụng khác nhau hoạt động độc lập. Mỗi ứng dụng được điều tiết tốc độ tự động, giới hạn hai worker một tác vụ và tối đa 12 tác vụ đang chạy toàn hệ thống. Dừng tác vụ sẽ hủy các yêu cầu chưa hoàn thành.
+- Không hỗ trợ @everyone hoặc tự động mention, gửi tin lặp vô hạn, giả mạo thiết bị, xử lý CAPTCHA hay né xác minh tài khoản.
+- Chỉ nhận **bot/application token** chính thức từ Discord. Không chấp nhận token tài khoản Discord cá nhân (self-bot).
+- Không đưa token vào mã nguồn, browser hoặc log. Token và mật khẩu quản trị cấu hình trong Render.
+- Mật khẩu quản trị dùng biến môi trường, không có mật khẩu dùng chung hard-code. Cookie HttpOnly/Secure/SameSite, chặn truy cập API chưa đăng nhập và kiểm tra Origin với các yêu cầu từ trình duyệt.
 
-`npm start` để chạy; `/health` để kiểm tra. Render dùng `render.yaml`.
+## Cấu hình trên Render
 
-Các chức năng Discord từ `6app.py` được chuyển: nhập tối đa 5 tài khoản vào phiên, chọn tài khoản gửi, chọn tối đa 5 chat trong một lần tạo tác vụ, gắn thẻ ID được chọn và dừng từng tác vụ. Nội dung giữ nguyên xuống dòng trong một tin; bản nháp quá dài được chia thành các phần tối đa 1.800 ký tự và gửi tuần tự. Số lượt lặp áp dụng cho toàn bộ bản nháp. `@everyone` được gửi dưới dạng mention thật bằng `allowed_mentions`, chỉ hỗ trợ một tin và một lần gửi; tài khoản vẫn cần quyền mention trong channel. Danh sách tên chat và ID lấy từ API Discord khi bấm “Tải tên chat”; một số cuộc trò chuyện có thể không hiện nếu tài khoản thiếu quyền hoặc API từ chối. Tối đa 5 tác vụ đồng thời, mỗi tác vụ tối đa 20 lượt lặp, khoảng cách chọn từ 1 đến 3600 giây; xử lý HTTP 429 theo `retry_after`, vì vậy khoảng cách thực tế có thể lâu hơn. Tác vụ lưu trong bộ nhớ và dừng khi dịch vụ khởi động lại.
+Thiết lập ba biến môi trường (giá trị KHÔNG commit vào GitHub):
 
-Nút “Tải ID tin nhắn” lấy tối đa 500 ID gần nhất trong chat đã chọn; nếu còn tin cũ hơn, web hiển thị trạng thái còn dữ liệu. Nút này chỉ đọc ID, không tải nội dung tin nhắn.
+| Biến | Ví dụ | Ý nghĩa |
+| --- | --- | --- |
+| ADMIN_PASSWORD | mật khẩu dài, ngẫu nhiên, tối thiểu 12 ký tự | Đăng nhập web |
+| DISCORD_BOT_TOKENS | ["token_ung_dung_1","token_ung_dung_2"] | Danh sách bot token dạng JSON; cũng nhận một token đơn |
+| DISCORD_GUILD_IDS | 123456789012345678,234567890123456789 | ID máy chủ có cấp quyền ứng dụng |
 
-`join 2.zip` là archive 7z gồm các lệnh đổi hồ sơ, tham gia và rời máy chủ. Các lệnh đó không liên quan danh sách chat và gửi tin, nên không được sao chép vào web.
+Tạo ứng dụng trong Discord Developer Portal, bật Bot và mời vào máy chủ do bạn quản lý với quyền View Channels và Send Messages. Cấu hình ID máy chủ, không phải ID người dùng. Quyền cụ thể ở từng kênh vẫn do Discord kiểm soát; mã sẽ báo lỗi 403 khi ứng dụng thiếu quyền.
 
-`change token.py` chứa cơ chế đăng nhập/handoff và thay token, chưa được chạy hay xác thực an toàn. Ứng dụng nhận token tài khoản qua form sau khi xác thực quản trị; không nhận email/mật khẩu Discord và không tự đổi token. Các chức năng Zalo, Telegram, Messenger, Instagram, Gmail và Locket không được đưa vào.
+Render: nối repository vào Web Service hoặc Blueprint, cấu hình ba biến trên rồi deploy. Node.js 20+. Dùng lệnh npm start để chạy; GET /health để kiểm tra ứng dụng. Với môi trường cục bộ, có thể xuất các biến qua shell trước khi chạy; không lưu chúng vào repository.
+
+## Giới hạn và trạng thái
+
+- Nội dung tối đa 8.000 ký tự Unicode, chia thành phần tối đa 1.850 ký tự. Giữ nguyên xuống dòng.
+- Tối đa 25 kênh mỗi tác vụ, 12 tác vụ đồng thời, tối đa 10 bot token cấu hình.
+- Tác vụ gửi đúng một bản nháp đến mỗi kênh đã chọn, không lặp định kỳ. Không hỗ trợ DM qua token người dùng.
+- Khi Discord trả HTTP 429, hệ thống tôn trọng retry_after và ngừng nếu vẫn bị giới hạn. Lỗi 401/403 không được né tránh.
+- Trạng thái tác vụ lưu trong bộ nhớ máy chủ. Nếu Render restart, dữ liệu này và tác vụ đang chạy sẽ mất; cần database để lưu trạng thái lâu dài. Không có cam kết tránh xác minh hoặc bảo đảm việc gửi khi Discord giới hạn.
+- Việc bấm Đăng xuất không tự dừng tác vụ; muốn dừng, mở thẻ Tác vụ và chọn ứng dụng tương ứng trước khi bấm Dừng.
+
+## Kiểm thử
+
+npm run check
+npm test
+
+Tài liệu chính thức: https://support.discord.com/hc/vi/articles/115002192352-T%C3%A0i-kho%E1%BA%A3n-ng%C6%B0%E1%BB%9Di-d%C3%B9ng-t%E1%BB%B1-%C4%91%E1%BB%99ng-self-bot
