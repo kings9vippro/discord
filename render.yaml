@@ -6,3 +6,10 @@ services:
     buildCommand: npm install --omit=dev
     startCommand: npm start
     healthCheckPath: /health
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DISCORD_BOT_TOKENS
+        sync: false
+      - key: DISCORD_GUILD_IDS
+        sync: false
