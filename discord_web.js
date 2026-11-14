@@ -22,6 +22,7 @@ function parseTokens(value) {
   if (!value || !String(value).trim()) return [];
   const raw = String(value).trim();
   let list;
+  if (raw.startsWith('{')) throw Error('DISCORD_BOT_TOKENS không chấp nhận JSON object.');
   if (raw.startsWith('[')) {
     list = JSON.parse(raw);
     if (!Array.isArray(list)) throw Error('DISCORD_BOT_TOKENS phải là một mảng JSON.');
