@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Discord Workspace | Phan Anh Khôi</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<main>
+  <header><div class="eyebrow">QUẢN TRỊ DISCORD</div><h1>Discord Workspace</h1><p>Quản lý thông báo, kênh và tác vụ từ một bảng điều khiển.</p></header>
+  <section class="card" id="login">
+    <h2>Đăng nhập quản trị</h2>
+    <form id="loginForm">
+      <label for="password">Mật khẩu quản trị</label>
+      <input id="password" type="password" minlength="12" required autocomplete="current-password">
+      <button type="submit">Đăng nhập</button>
+    </form>
+  </section>
+  <div id="dashboard" hidden>
+    <div class="toolbar"><nav aria-label="Điều hướng"><button class="tab" data-tab="compose" type="button">Soạn thông báo</button><button class="tab" data-tab="tasks" type="button">Tác vụ</button><button class="tab" data-tab="accounts" type="button">Tài khoản</button></nav><button class="secondary" type="button" id="logout">Đăng xuất</button></div>
+    <section class="card" data-panel="compose">
+      <h2>Gửi thông báo đến các kênh đã quản lý</h2>
+      <p class="note">Mỗi tác vụ gửi bản nháp một lần đến các kênh đã chọn. Không tự động nhắc thành viên hoặc lặp vô hạn.</p>
+      <form id="sendForm">
+        <label for="accountSelect">Ứng dụng gửi</label>
+        <select id="accountSelect" required><option value="">Chọn ứng dụng</option></select>
+        <div class="inline"><label for="channelSelect">Chọn nhiều kênh</label><button type="button" id="loadChannels" class="secondary compact">Tải lại kênh</button></div>
+        <select id="channelSelect" multiple size="9" aria-describedby="channelHelp"></select>
+        <small id="channelHelp">Giữ Ctrl/Command để chọn nhiều kênh. Trên điện thoại, chọn từng mục trong danh sách.</small>
+        <div class="inline"><span id="selectedCount" class="note">0 kênh đã chọn</span><button type="button" id="selectAll" class="secondary compact">Chọn tất cả kênh hiện có</button></div>
+        <label for="message">Nội dung thông báo</label>
+        <textarea id="message" required maxlength="8000" placeholder="Nhập thông báo, giữ nguyên xuống dòng."></textarea>
+        <label for="textFile">Hoặc nhập từ tệp .txt</label>
+        <input type="file" accept=".txt,text/plain" id="textFile">
+        <small>Nội dung dài được chia thành các phần tối đa 1.850 ký tự; tổng tối đa 8.000 ký tự.</small>
+        <button type="submit" id="submitJob">Bắt đầu tác vụ</button>
+      </form>
+    </section>
+    <section class="card" data-panel="tasks" hidden>
+      <div class="inline"><h2>Quản lý tác vụ</h2><button type="button" id="refreshTasks" class="secondary compact">Làm mới</button></div>
+      <label for="taskAccount">Lọc theo tài khoản</label>
+      <select id="taskAccount"><option value="">Tất cả ứng dụng</option></select>
+      <div id="taskSummary" class="summary" aria-live="polite"></div>
+      <div id="jobs" aria-live="polite"></div>
+    </section>
+    <section class="card" data-panel="accounts" hidden>
+      <h2>Các ứng dụng đã kết nối</h2>
+      <p class="note">Thông tin lấy từ Discord API. Thêm hoặc thay token ứng dụng trong biến môi trường của Render, không nhập token tài khoản cá nhân lên web.</p>
+      <div id="accounts"></div>
+      <p class="note">Chỉ hiển thị những ứng dụng đang xác thực thành công. Danh sách kênh lấy từ DISCORD_GUILD_IDS.</p>
+    </section>
+  </div>
+  <p class="notice" id="notice" role="status" aria-live="polite"></p>
+  <footer>Phát triển và vận hành: Phan Anh Khôi</footer>
+</main>
+</body>
+</html>

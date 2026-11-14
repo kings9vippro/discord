@@ -1,1 +1,12 @@
-{"name":"phan-anh-khoi-discord-web","version":"1.0.0","private":true,"scripts":{"start":"node discord_web.js"},"engines":{"node":">=20"}}
+{
+  "name": "phan-anh-khoi-discord-workspace",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Discord application channel announcement and task dashboard",
+  "scripts": {
+    "start": "node discord_web.js",
+    "check": "node --check discord_web.js && node --check public/app.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
