@@ -1,1 +1,18 @@
-{"name":"phan-anh-khoi-discord-web","version":"1.0.0","private":true,"scripts":{"start":"node discord_web.js"},"engines":{"node":">=20"}}
+{
+  "name": "phan-anh-khoi-discord-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node discord_web.js"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "node-fetch": "2.7.0",
+    "proxy-agent": "6.5.0"
+  },
+  "overrides": {
+    "basic-ftp": "6.2.6"
+  }
+}
