@@ -12,18 +12,11 @@ try {
 }
 
 const PORT = Number(process.env.PORT || 10000);
-const DEFAULT_PASSWORD_SALT = '58ee33cd4c21ad58e7555ef5776f1ee9';
-const DEFAULT_PASSWORD_HASH = Buffer.from(
+const PASSWORD_SALT = '58ee33cd4c21ad58e7555ef5776f1ee9';
+const PASSWORD_HASH = Buffer.from(
   '2a04bfc8aa99595075fda1679c650939ba670866923e20d5a4015220a91eb90b6a173e62f2eb3e9938f2412de426cebf88a220da830ca2ab698e0fe3fd4fa44c',
   'hex',
 );
-const ENV_PASSWORD = process.env.ADMIN_PASSWORD;
-const PASSWORD_SALT = ENV_PASSWORD
-  ? (process.env.PASSWORD_SALT || DEFAULT_PASSWORD_SALT)
-  : DEFAULT_PASSWORD_SALT;
-const PASSWORD_HASH = ENV_PASSWORD
-  ? scryptSync(ENV_PASSWORD, PASSWORD_SALT, 64)
-  : DEFAULT_PASSWORD_HASH;
 
 const WARMUP_TOTAL_MS = Math.max(15000, Number(process.env.WARMUP_MS || 90000));
 const PACING_MIN_MS = Math.max(20, Number(process.env.PACING_MIN_MS || 30));
@@ -734,7 +727,7 @@ setInterval(() => {
 
 server.listen(PORT, '0.0.0.0', async () => {
   console.log(`Listening on ${PORT}`);
-  console.log(`Admin login: ${ENV_PASSWORD ? 'environment override' : 'built-in password hash'}`);
+  console.log('Admin login: built-in password hash');
   console.log(`v7 · pacing ${PACING_MIN_MS}–${PACING_MAX_MS}ms · conc ${ACCOUNT_CONCURRENCY}/acc · warmup ${WARMUP_TOTAL_MS}ms · proxies ${PROXY_LIST.length}`);
   await healthCheckAll();
 });
